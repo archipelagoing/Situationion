@@ -121,18 +121,6 @@ Reveals clustering and structural evolution across layers.
 
 ---
 
-## Repository Structure
-
-```
-extract_hidden_states.py    # Hidden state extraction
-train_probe.py              # Linear probe training
-evaluate.py                 # Layer-wise evaluation
-visualize.py                # PCA and visualization
-notebooks/                  # Experimental analysis
-```
-
----
-
 ## Tech Stack
 
 - Python
