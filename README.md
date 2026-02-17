@@ -6,6 +6,10 @@ Experimental pipeline for extracting and evaluating hidden state representations
 ---
 Licensed under Apache 2.0
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
+All figures in this directory are original works generated
+by the SituatiONION project.
+© 2026 Archisa Bhattacharya
+Reuse requires attribution.
 
 ## Overview
 
@@ -22,6 +26,33 @@ Core questions:
 - How does representation structure evolve across depth?
 - Which layers produce the most useful downstream features?
 
+---
+## Key Results
+
+<figure>
+  <img src="figures/LayerwiseParaSim.png" width="650">
+  <figcaption>
+    <b>Figure 1.</b> Layer-wise linear separability. Peak separability occurs in mid-layers.
+  </figcaption>
+</figure>
+
+<br>
+
+<figure>
+  <img src="figures/SharedPcaCatSat.png" width="650">
+  <figcaption>
+    <b>Figure 2.</b> PCA trajectory reveals structured representational geometry.
+  </figcaption>
+</figure>
+
+<br>
+
+<figure>
+  <img src="figures/tokenTrajectory.gif" width="650">
+  <figcaption>
+    <b>Figure 3.</b> Animated visualization showing semantic organization emerging across layers.
+  </figcaption>
+</figure>
 ---
 
 ## Pipeline
@@ -143,12 +174,7 @@ Copyright © 2026 Archisa Bhattacharya
 
 Machine Learning Systems | Representation Learning
 This repository contains original research on transformer mid-layer semantic structure
-
-
-
-All figures in this directory are original works generated
-by the SituatiONION project.
-
-© 2026 Archisa Bhattacharya
-Reuse requires attribution.
+-------
+While the code is Apache 2.0 licensed, the conceptual framework and experimental design constitute original research and must be cited if used in derivative academic work.
+-------
 
