@@ -1,5 +1,4 @@
-# 🧅 SituatiONION  
-# Transformer Representation Analysis Pipeline
+# 🧅 SituatiONION : Transformer Representation Analysis Pipeline
 
 Experimental pipeline for extracting and evaluating hidden state representations from transformer language models to quantify how semantic information emerges across layers.
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
@@ -39,7 +38,7 @@ Core questions:
 <figure>
   <img src="figures/SharedPcaCatSat.png" width="650">
   <figcaption>
-    <b>Figure 2.</b> PCA projection of token representations across transformer layers. Early-layer representations are diffuse and weakly organized, mid-layer representations form structured and well-separated clusters, and late-layer representations exhibit convergence toward task-specific encoding. This progression indicates the emergence of a structured semantic regime in mid-layers, consistent with the SituatiONION hypothesis.
+    <b>Figure 2.</b> PCA projection of token representations across transformer mid-layers in a shared embedding space. Each point represents a token at a specific layer, and trajectories show how representations evolve with increasing depth. Tokens follow smooth, structured paths and occupy distinct regions of representation space, indicating progressive semantic organization and increasing geometric separability in intermediate layers.
   </figcaption>
 </figure>
 
