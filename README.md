@@ -4,6 +4,8 @@
 Experimental pipeline for extracting and evaluating hidden state representations from transformer language models to quantify how semantic information emerges across layers.
 
 ---
+Licensed under Apache 2.0
+![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
 
 ## Overview
 
@@ -136,7 +138,17 @@ Confirms progressive semantic organization in transformer representations.
 ---
 
 ## Author
+Author: Archisa Bhattacharya  
+Copyright © 2026 Archisa Bhattacharya
 
-Archisa Bhattacharya  
 Machine Learning Systems | Representation Learning
+This repository contains original research on transformer mid-layer semantic structure
+
+
+
+All figures in this directory are original works generated
+by the SituatiONION project.
+
+© 2026 Archisa Bhattacharya
+Reuse requires attribution.
 
