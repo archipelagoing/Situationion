@@ -39,7 +39,7 @@ Core questions:
 <figure>
   <img src="figures/SharedPcaCatSat.png" width="650">
   <figcaption>
-    <b>Figure 2.</b> PCA trajectory reveals structured representational geometry.
+    <b>Figure 2.</b> PCA trajectory reveals structured representational geometry for the sentence "The cat sat on the mat. "
   </figcaption>
 </figure>
 
@@ -48,7 +48,7 @@ Core questions:
 <figure>
   <img src="figures/tokenTrajectory.gif" width="650">
   <figcaption>
-    <b>Figure 3.</b> Animated visualization showing semantic organization emerging across layers.
+    <b>Figure 3.</b> Animated visualization showing semantic organization emerging across layers for the sentence "John put the glass on the table. It broke."
   </figcaption>
 </figure>
 ---
