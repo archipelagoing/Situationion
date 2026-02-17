@@ -30,7 +30,7 @@ Core questions:
 <figure>
   <img src="figures/LayerwiseParaSim.png" width="650">
   <figcaption>
-    <b>Figure 1.</b> Layer-wise linear separability. Peak separability occurs in mid-layers.
+    <b>Figure 1.</b> Linear probe accuracy as a function of transformer layer depth. Separability increases from early layers, peaks in mid-layers, and declines or stabilizes in later layers. This pattern indicates that mid-layers contain the most linearly separable and semantically structured representations, consistent with the SituatiONION hypothesis.
   </figcaption>
 </figure>
 
@@ -39,7 +39,7 @@ Core questions:
 <figure>
   <img src="figures/SharedPcaCatSat.png" width="650">
   <figcaption>
-    <b>Figure 2.</b> PCA trajectory reveals structured representational geometry for the sentence "The cat sat on the mat. "
+    <b>Figure 2.</b> PCA projection of token representations across transformer layers. Early-layer representations are diffuse and weakly organized, mid-layer representations form structured and well-separated clusters, and late-layer representations exhibit convergence toward task-specific encoding. This progression indicates the emergence of a structured semantic regime in mid-layers, consistent with the SituatiONION hypothesis.
   </figcaption>
 </figure>
 
@@ -48,7 +48,7 @@ Core questions:
 <figure>
   <img src="figures/tokenTrajectory.gif" width="650">
   <figcaption>
-    <b>Figure 3.</b> Animated visualization showing semantic organization emerging across layers for the sentence "John put the glass on the table. It broke."
+    <b>Figure 3.</b> Animated PCA projection of token representations across transformer layers for the sentence "John put the glass on the table. It broke." Token trajectories are relatively diffuse in early layers, undergo pronounced geometric reorganization in mid-layers, and stabilize in later layers. The increased mid-layer movement reflects a transition from surface-level encoding to structured semantic representation, consistent with the SituatiONION hypothesis. 
   </figcaption>
 </figure>
 ---
