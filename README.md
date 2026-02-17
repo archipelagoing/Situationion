@@ -158,9 +158,4 @@ Confirms progressive semantic organization in transformer representations.
 Author: Archisa Bhattacharya  
 Copyright © 2026 Archisa Bhattacharya
 
-Machine Learning Systems | Representation Learning
-This repository contains original research on transformer mid-layer semantic structure
--------
-While the code is Apache 2.0 licensed, the conceptual framework and experimental design constitute original research and must be cited if used in derivative academic work.
--------
 
