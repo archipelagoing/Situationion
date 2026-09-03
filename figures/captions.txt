@@ -1,0 +1,7 @@
+Figure 1. Layer-Wise Situation Similarity Across GPT-2 XL
+
+Caption: Paraphrases and meaning-changed counterfactuals remain almost equally similar to the original sentences across GPT-2 XL’s layers. As a result, the situation score remains close to zero and shows no clear peak in the hypothesized core-middle layers (23–26). This suggests that whole-sentence mean-pooled cosine similarity does not clearly distinguish between preserved and changed situations, possibly because the similarity values are saturated near 1.0.
+
+Figure 2. Attention Span Across GPT-2 XL Layers
+
+Caption: GPT-2 XL’s attention becomes increasingly long-range as information moves through the model. Early layers mainly attend to nearby tokens, while middle and later layers attend across greater distances. Layers 23–26 fall within this broader-attention stage, but there is no unique peak or transition in this region. This suggests that contextual integration increases with depth, but does not specifically support layers 23–26 as a distinct situation-processing region.
