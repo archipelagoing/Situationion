@@ -1,0 +1,27 @@
+1.WhatBertStructLang
+“What does BERT learn about the structure of language?” by Ganesh Jawahar, Benoit Sagot, and Djame Seddah. This paper probes BERT layer by layer and argues that lower layers capture phrase-level syntax while deeper layers capture more complex linguistic structure.
+
+2.BERTRedisClassicNLP
+“BERT Rediscovers the Classical NLP Pipeline” by Ian Tenney, Dipanjan Das, and Ellie Pavlick. The main claim is that BERT internally organizes linguistic information in a sequence resembling the classic NLP stack: POS, parsing, NER, semantic roles, then coreference.
+
+3.AnalyzeAttentionStructure
+“Analyzing the Structure of Attention in a Transformer Language Model” by Jesse Vig. This is an interpretability paper on GPT-2 attention patterns, looking at how attention heads specialize and what structural roles they may play.
+
+4.4PrimerBertOlogy
+“A Primer in BERTology(: What We Know About How BERT Works” by Anna Rogers, Olga Kovaleva, and Anna Rumshisky. This is a survey paper summarizing the early interpretability literature around BERT.
+
+5.PrimerTransformer
+“A Primer on the Inner Workings of Transformer-Based Language Models” by Javier Ferrando, Gabriele Sarti, Arianna Bisazza, and Marta R. Costa-jussa. This looks like a broader, newer survey focused on mechanistic and interpretability methods for decoder-style Transformers.
+
+6.MultiScaleProbGenThry
+“Multi-Scale Probabilistic Generation Theory: A Hierarchical Framework for Interpreting Large Language Models” by Yukun Zhang and Qi Dong. This proposes a hierarchical theory that maps different generation scales, like global context vs. local word choice, onto different layer ranges.
+
+7.BertTtention 
+“What Does BERT Look At? An Analysis of BERT’s Attention” by Kevin Clark, Urvashi Khandelwal, Omer Levy, and Christopher Manning. This is a well-known analysis of BERT attention heads and shows that some heads track fairly interpretable relations like syntax or coreference.
+
+8Strategies of Discourse Comprehension”
+
+“Strategies of Discourse Comprehension” by Teun A. van Dijk and Walter Kintsch. This is the oldest and most theory-heavy item here: a classic book about how people build meaning from discourse across sentences and larger text structure.
+
+9Toward_a_model_of_text_comprehension_and.pdf
+“Toward a Model of Text Comprehension and Production” by Walter Kintsch and Teun A. van Dijk, from Psychological Review (1978). This is a foundational cognitive-science paper on text understanding and likely serves as background for the discourse-level ideas in the later Transformer papers.
