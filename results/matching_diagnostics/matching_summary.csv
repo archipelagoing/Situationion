@@ -1,0 +1,6 @@
+manipulation,n,absolute_unigram_jaccard_gap,absolute_unigram_multiset_f1_gap,absolute_bigram_jaccard_gap,absolute_edit_similarity_gap,absolute_structural_edit_similarity_gap,absolute_length_difference_gap,match_score
+agent_recipient,60,0.0,0.0,0.08571428571428569,0.0,0.0,0.0,0.08571428571428569
+cause,60,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+event_state,60,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+polarity,60,0.09090909090909095,0.0643274853801169,0.016483516483516508,0.0,0.0,1.0,1.1717200927727243
+temporal,60,0.0,0.0,0.0,0.0,0.0,0.0,0.0
