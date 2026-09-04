@@ -322,6 +322,97 @@ def summary_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]:
     return summary
 
 
+def probe_example_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    """Expand frozen triples into one probe-ready row per sentence variant.
+
+    Empty labels mean the variable is not manipulated in that example. Probe
+    code must filter on the corresponding ``*_eligible`` flag rather than
+    treating an empty label as a class.
+    """
+    examples = []
+    for row in rows:
+        for variant in ("base", "paraphrase", "counterfactual"):
+            is_counterfactual = variant == "counterfactual"
+            role_swap = row["manipulation"] == "agent_recipient"
+            semantic_agent = row["recipient"] if role_swap and is_counterfactual else row["agent"]
+            semantic_recipient = row["agent"] if role_swap and is_counterfactual else row["recipient"]
+
+            event_state = ""
+            if row["manipulation"] == "event_state":
+                event_state = "dropped" if is_counterfactual else "carried"
+
+            polarity = ""
+            if row["manipulation"] == "polarity":
+                polarity = "negative" if is_counterfactual else "affirmative"
+
+            temporal_relation = ""
+            if row["manipulation"] == "temporal":
+                temporal_relation = "before" if is_counterfactual else "after"
+
+            cause_holder_role = ""
+            if row["manipulation"] in {"agent_recipient", "cause"}:
+                cause_holder_role = "agent" if is_counterfactual else "recipient"
+
+            # The current V4 set contrasts causal and temporal constructions,
+            # but that contrast is lexical. Keep the label for documentation,
+            # while preventing it from being misused as a causal-relation probe.
+            causal_relation = "temporal" if row["manipulation"] == "temporal" else "causal"
+            examples.append({
+                "sentence_id": f"{row['identifier']}__{variant}",
+                "triple_id": row["identifier"],
+                "variant": variant,
+                "text": row[variant],
+                "manipulation": row["manipulation"],
+                "template_id": row["template_id"],
+                "split": row["split"],
+                "template_split": row["template_split"],
+                "entity_split": row["entity_split"],
+                "semantic_agent": semantic_agent,
+                "semantic_recipient": semantic_recipient,
+                "event_lemma": row["event"],
+                "event_state": event_state,
+                "cause_holder_role": cause_holder_role,
+                "causal_relation": causal_relation,
+                "role_assignment": "swapped" if role_swap and is_counterfactual else "preserved",
+                "polarity": polarity,
+                "temporal_relation": temporal_relation,
+                "agent_identity_eligible": row["entity_split"] == "dev",
+                "recipient_identity_eligible": row["entity_split"] == "dev",
+                "role_assignment_eligible": role_swap,
+                "event_state_eligible": row["manipulation"] == "event_state",
+                "cause_holder_role_eligible": row["manipulation"] in {"agent_recipient", "cause"},
+                "causal_relation_eligible": False,
+                "polarity_eligible": row["manipulation"] == "polarity",
+                "temporal_relation_eligible": row["manipulation"] == "temporal",
+            })
+    return examples
+
+
+def probe_label_summary(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    targets = {
+        "agent_identity": "semantic_agent",
+        "recipient_identity": "semantic_recipient",
+        "role_assignment": "role_assignment",
+        "event_state": "event_state",
+        "cause_holder_role": "cause_holder_role",
+        "polarity": "polarity",
+        "temporal_relation": "temporal_relation",
+    }
+    summary = []
+    for task, label_column in targets.items():
+        eligible = [row for row in rows if row[f"{task}_eligible"]]
+        for split in sorted({row["split"] for row in eligible}):
+            labels = [row[label_column] for row in eligible if row["split"] == split]
+            summary.append({
+                "task": task,
+                "split": split,
+                "n_sentences": len(labels),
+                "n_classes": len(set(labels)),
+                "labels": "|".join(sorted(set(labels))),
+            })
+    return summary
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target-size", type=int, default=300, help="Balanced accepted dataset size (default: 300).")
@@ -333,7 +424,10 @@ def main() -> None:
 
     write_csv(DATA_DIR / "candidate_triples.csv", candidate_rows)
     write_csv(DATA_DIR / "matched_triples.csv", accepted_rows)
+    probe_rows = probe_example_rows(accepted_rows)
+    write_csv(DATA_DIR / "v5_probe_examples.csv", probe_rows)
     write_csv(DIAGNOSTICS_DIR / "matching_summary.csv", summary_rows(accepted_rows))
+    write_csv(DIAGNOSTICS_DIR / "v5_probe_label_summary.csv", probe_label_summary(probe_rows))
 
     review_rng = random.Random(args.seed)
     review_rows = accepted_rows.copy()
@@ -342,6 +436,7 @@ def main() -> None:
 
     print(f"Wrote {len(candidate_rows)} candidates and {len(accepted_rows)} matched triples.")
     print(f"Accepted triples: {DATA_DIR / 'matched_triples.csv'}")
+    print(f"Probe examples: {DATA_DIR / 'v5_probe_examples.csv'}")
     print(f"Matching diagnostics: {DIAGNOSTICS_DIR}")
 
 
