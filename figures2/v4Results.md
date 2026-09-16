@@ -161,6 +161,8 @@ These results show that there is **no single universal emergence layer** for
 situation-sensitive information. Instead, the onset and strength of separation
 depend on the representation being measured.
 
+--- so instead, the situation relevant information acts as a manifold across the different layers. 
+
 ### H1: Are Layers 23–26 Locally Privileged?
 
 The preregistered layers 23–26 showed a reliable local enhancement relative
