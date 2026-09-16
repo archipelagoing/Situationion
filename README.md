@@ -1,160 +1,139 @@
-# 🧅 SituatiONION : Transformer Representation Analysis Pipeline
+# SituatiONION 🧅
 
-Experimental pipeline for extracting and evaluating hidden state representations from transformer language models to quantify how semantic information emerges across layers.
-![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
----
-All figures in this directory are original works generated
-by the SituatiONION project.
-© 2026 Archisa Bhattacharya
-Reuse requires attribution.
+**Layer-wise analysis of situation-sensitive and relational representations in GPT-2 XL.**
 
-## Overview
+SituatiONION investigates how information about events, participant roles, causal roles, and temporal relations is recoverable across transformer depth. It combines controlled paraphrase–counterfactual comparisons, token-specific representation analysis, diagnostic probing, and compositional generalization experiments.
 
-Transformer models encode increasingly abstract semantic structure as information propagates through layers. This project builds a reproducible pipeline to:
+The project began with a hypothesis of a transient middle-layer situation representation. Subsequent experiments support a more differentiated account: measured situation sensitivity and relational accessibility depend on **layer, readout, task, and evaluation split**. Selected relational probes outperform lexical and compressed-representation controls, but the evidence does not establish a single situation-model layer or causal use of the decoded information.
 
-- Extract hidden state representations from each transformer layer
-- Construct feature datasets from embeddings
-- Quantitatively evaluate representation quality using linear probes
-- Visualize representation geometry using dimensionality reduction
+## Research questions
 
-Core questions:
+- Where do representations distinguish situation-preserving paraphrases from situation-changing counterfactuals?
+- Which situation variables remain decodable beyond strong controls?
+- How does relational accessibility vary across token positions and layers?
+- How well does this accessibility extend to unfamiliar entities, templates, and composition depths?
 
-- Where in the network is semantic information most separable?
-- How does representation structure evolve across depth?
-- Which layers produce the most useful downstream features?
+Here, *situation-sensitive* refers to an operational measurement on controlled linguistic stimuli. It does not imply that a human-like situation model has been established.
 
----
-## Key Results
+## Development and evidence
 
-<figure>
-  <img src="figures/LayerwiseParaSim.png" width="650">
-  <figcaption>
-    <b>Figure 1.</b> Linear probe accuracy as a function of transformer layer depth. Separability increases from early layers, peaks in mid-layers, and declines or stabilizes in later layers. This pattern indicates that mid-layers contain the most linearly separable and semantically structured representations, consistent with the SituatiONION hypothesis.
-  </figcaption>
-</figure>
+| Stage | Contribution | Interpretation carried forward |
+|---|---|---|
+| **V2 — Exploratory interpretation** | Paraphrase similarity, token trajectories, shared PCA, and attention diagnostics motivated an assembly–stabilization–collapse hypothesis. | Geometric patterns motivate hypotheses; they do not independently establish semantic assembly, role binding, or collapse. |
+| **V3 — Controlled diagnostics** | Introduced base–paraphrase–counterfactual triples, a situation-separation score, alternative readouts, and lexical controls. Project notes report weak pooled separation and motivate an earlier-emergence alternative. | Test sensitivity to changed situations explicitly, and compare readouts before assigning a special role to a layer band. The small seed dataset is exploratory. |
+| **V4 — Structural controls** | Expanded to a 300-triple design with structural matching and held-out evaluation. Separation differed substantially across readouts. | Layers 23–26 show local enhancement for some readouts within a much broader depth profile. |
+| **V5 / V5.7 — Decodability and validation** | Compared layer-wise probes with lexical, random-projection, majority, and shuffled-label controls; evaluated selected advantages with paired bootstrap resampling. | Selected relational configurations retain positive control-adjusted advantages. Perfect raw accuracy alone is insufficient evidence of a distinctive signal. |
+| **V6 — Relational dynamics and abstraction** | Saved reports map accessibility across evaluation splits and compare final-token and query-entity-pair readouts across composition depths. | Preliminary figures show split dependence and weaker peak advantages at unseen depths; they do not demonstrate uniform compositional generalization. |
 
-<br>
+## Methods
 
-<figure>
-  <img src="figures/SharedPcaCatSat.png" width="650">
-  <figcaption>
-    <b>Figure 2.</b> PCA projection of token representations across transformer mid-layers in a shared embedding space. Each point represents a token at a specific layer, and trajectories show how representations evolve with increasing depth. Tokens follow smooth, structured paths and occupy distinct regions of representation space, indicating progressive semantic organization and increasing geometric separability in intermediate layers.
-  </figcaption>
-</figure>
+### Controlled situation separation
 
-<br>
+Each triple contains a base sentence, a meaning-preserving paraphrase, and a counterfactual that changes a situation variable. V4 controls lexical and structural differences and evaluates multiple representation readouts.
 
-<figure>
-  <img src="figures/tokenTrajectory.gif" width="650">
-  <figcaption>
-    <b>Figure 3.</b> Animated PCA projection of token representations across transformer layers for the sentence "John put the glass on the table. It broke." Token trajectories are relatively diffuse in early layers, undergo pronounced geometric reorganization in mid-layers, and stabilize in later layers. The increased mid-layer movement reflects a transition from surface-level encoding to structured semantic representation, consistent with the SituatiONION hypothesis. 
-  </figcaption>
-</figure>
----
+For layer `l` and readout `r`, the situation score is:
 
-## Pipeline
-
-```
-Text Input
-  ↓
-Tokenization
-  ↓
-Transformer Forward Pass
-  ↓
-Hidden State Extraction
-  ↓
-Feature Dataset Construction
-  ↓
-Evaluation (Linear Probe)
-  ↓
-Visualization (PCA)
+```text
+S(l, r) = mean[cos(h(base), h(paraphrase)) − cos(h(base), h(counterfactual))]
 ```
 
----
+A positive score indicates greater similarity to the paraphrase than to the counterfactual. Readouts include changed token, event token, final token, ordered agent/recipient representations where applicable, mean pooling, and max pooling.
 
-## Method
+### Diagnostic probing
 
-### Hidden State Extraction
+V5 evaluates situation variables across layers, readouts, and held-out splits. Its conservative decoding advantage is:
 
-Extract layer-wise representations using HuggingFace Transformers:
-
-```python
-outputs = model(**inputs, output_hidden_states=True)
-hidden_states = outputs.hidden_states
+```text
+advantage = balanced_accuracy(full hidden-state probe)
+            − max(balanced_accuracy(lexical control),
+                  balanced_accuracy(random-projection control))
 ```
 
-Produces tensor:
+The random-projection control uses compressed hidden states; it is not a chance baseline. An advantage measures performance relative to these particular controls, rather than proving an exclusively semantic representation.
 
-```
-[num_samples, num_layers, hidden_dimension]
-```
+### Relational accessibility and abstraction
 
----
+V6 examines distributions of positive decoding advantage across readouts and generalization beyond familiar configurations. Its migration framework describes changes in accessibility distributions across adjacent layers, not literal or causal information transport. The saved V6.2 report compares composition depths `k = 2–4` (seen) with `k = 5–10` (unseen), using final-token and query-entity-pair readouts.
 
-### Linear Probe Evaluation
+## Results to date
 
-Train linear classifiers to measure semantic separability:
+### V4: situation separation depends on the readout
 
-```python
-probe = LogisticRegression(max_iter=1000)
-probe.fit(X_train, y_train)
-accuracy = probe.score(X_test, y_test)
-```
+The [recorded V4 results](figures2/v4Results.md) report:
 
-Higher accuracy → stronger semantic encoding.
+| Readout | Reliably positive layers | Qualification |
+|---|---|---|
+| Changed token | 48/48: 0–47 | The directly changed position can carry local distinguishing information from the outset. |
+| Final token | 43/48: 1–2 and 7–47 | Broad separation across depth. |
+| Event token | 38/48: 4–40 and 47 | Separation develops and weakens with depth. |
+| Mean pool | 35/48: 11–45 | Absolute separation is very small. |
+| Max pool | 0/48 | No reliably positive separation under this metric. |
+| Agent/recipient | Not evaluable in the aggregate | No aggregate conclusion. |
 
-Evaluated independently across all layers.
+Layers **23–26** exceed neighboring layers for the changed-token readout (`Δ = 0.00702`, reported effect size `0.744`) and final-token readout (`Δ = 0.00181`, effect size `0.578`). This is partial, readout-specific support for the original hypothesis. There is no common emergence layer across readouts.
 
----
+![V4 situation separation across layers and readouts](figures2/V4.1.png)
 
-### Visualization
+### V5: relational advantages survive selected control comparisons
 
-Use PCA to inspect representation geometry:
+The executed [V5 validation notebook](Copy_of_v5_Decodability_MechDiagnostic.ipynb) reports the following selected configurations on the combined held-out split:
 
-```python
-pca = PCA(n_components=2)
-X_reduced = pca.fit_transform(X)
-```
+| Variable | Configuration | Test examples | Conservative advantage | 95% paired bootstrap interval |
+|---|---|---:|---:|---|
+| Temporal relation | Layer 38, max pool | 18 | +0.500 | [0.500, 0.500] |
+| Cause-holder role | Layer 16, changed token | 36 | +0.333 | [0.187, 0.500] |
+| Role assignment | Layer 16, changed token | 18 | +0.250 | [0.083, 0.458] |
+| Event state | Layer 24, changed token | 18 | 0.000 | [0.000, 0.000] |
+| Polarity | Layer 24, changed token | 18 | 0.000 | [0.000, 0.000] |
 
-Reveals clustering and structural evolution across layers.
+All five selected full-representation probes achieved perfect balanced accuracy. The controls also achieved perfect accuracy for event state and polarity, explaining their zero advantage. These are selected configurations, not averages across every layer or split.
 
----
+The degenerate temporal-relation interval reflects fixed predictions on a small held-out sample under class-stratified resampling; it does not imply zero population uncertainty. The intervals also do not account for selecting configurations after inspecting the atlas.
 
-## Tech Stack
+Readout-switch permutation tests found **no significant enrichment** in layers 20–40 (`p = 0.180`) or the reference region 22–27 (`p = 0.351`). Visual switching patterns therefore do not establish a localized transition region. The saved validation report marks independent CPU/GPU implementation validation as pending.
 
-- Python
-- PyTorch / HuggingFace Transformers
-- NumPy
-- scikit-learn
-- Matplotlib
+Max pooling's positive V5 temporal-probe result is compatible with its weak V4 result: supervised decoding and unsupervised cosine separation measure different properties.
 
----
+### V6: accessibility and generalization remain conditional
 
-## Results Summary
+The [V6.1 accessibility report](figures2/V6_1_accessibility_heatmaps%20%282%29.pdf) displays layer × readout maps separately for entity, template, and combined holdouts. Temporal-relation accessibility illustrates the split dependence: the combined split shows a prominent positive max-pool region, whereas the template-held-out map shows no positive advantage and the entity-held-out map has much smaller positive values. These splits should not be treated as a simple ordered difficulty scale.
 
-Typical findings:
+The [V6.2 abstraction report](figures2/V6_2_Relational_Abstraction_Figures%20%282%29.pdf) shows:
 
-- Early layers encode lexical features
-- Middle layers encode semantic structure
-- Later layers encode task-specific abstractions
-- Linear separability peaks in mid-to-late layers
+- Peak advantages are generally lower at unseen composition depths `k = 5–10` than at seen depths `k = 2–4` in the full-condition summary.
+- Positive peak values remain at unseen depths, but are small near `k = 10`; layer-wise performance is not uniformly positive.
+- The maximizing layer varies with composition depth and readout, without a monotonic shift toward deeper layers.
 
-Confirms progressive semantic organization in transformer representations.
+These are **descriptive observations from saved figures**, not significance-tested claims of systematic abstraction. The local V6 notebook contains an unresolved merge conflict, and the saved composition-depth report differs from its outlined K0–K6 holdout protocol. The figure results and that planned protocol are therefore kept distinct here. Completed evidence for geometric coupling, a shared Relation Lens, or causal handoff is not established by these reports.
 
----
+## Scope and limitations
 
-## Applications
+The evidence concerns GPT-2 XL and controlled stimuli. Broader claims require larger independent evaluations and additional models. Decodability and representational separation do not establish causal necessity, behavioral reasoning ability, or a human-like situation model. Likewise, a zero control-adjusted advantage does not imply that the model lacks the corresponding information.
 
-- Model interpretability
-- Representation evaluation
-- Feature extraction
-- Transformer analysis
-- Downstream ML feature engineering
+The original assembly–stabilization–collapse account remains a motivating hypothesis. The current empirical emphasis is on **distributed, readout-dependent relational accessibility and its generalization limits**. Causal interventions are the next stage of investigation, outlined in [V7](v7_RealCausal.ipynb).
 
----
+## Repository guide
 
-## Author
-Author: Archisa Bhattacharya  
-Copyright © 2026 Archisa Bhattacharya
+| Resource | Contents |
+|---|---|
+| [V2 notebook](SituatiONION2_Interp.ipynb) | Exploratory geometry and interpretation. |
+| [V3 notebook](SituatiONIONv3_ControlledDiag.ipynb) | Controlled situation score and readout diagnostics. |
+| [V4 notebook](SituatiONIONv4_structural_controls.ipynb) | Structural controls and held-out separation analysis. |
+| [Dataset builder](structural_controls.py) | Matched triples and matching diagnostics; no model inference. |
+| [V5 notebook](v5_Decodability_MechDiagnostic.ipynb) | Decodability analysis design and implementation. |
+| [Executed V5 copy](Copy_of_v5_Decodability_MechDiagnostic.ipynb) | Saved atlas outputs and V5.7 statistical validation. |
+| [V6 notebook](v6TightClean_RelationalDynamics.ipynb) | Relational dynamics framework; currently requires merge resolution. |
+| [Figures and reports](figures2/) | V4 results, V5 validation, and V6 figure reports. |
+| [Data](data/) and [results](results/) | Stimuli, diagnostics, and available cached artifacts. |
 
+## Working with the analyses
 
+This is a research notebook repository. The analyses use Python, PyTorch, Hugging Face Transformers, NumPy, pandas, scikit-learn, and Matplotlib; some V5 runs use RAPIDS/cuML. Notebook configuration includes environment-specific artifact paths that need adjustment for another machine. A pinned, end-to-end reproduction environment is not yet provided.
+
+Start with the saved reports and notebook outputs. Before rerunning analyses, inspect their configuration and expected caches. Regenerating the dataset with `python structural_controls.py` writes data and matching diagnostics; preserve the frozen inputs associated with a reported run.
+
+## Author and attribution
+
+Archisa Bhattacharya. See [CITATION.cff](CITATION.cff) for citation metadata and [LICENSE](LICENSE) for the repository license.
+
+Original project figures © 2026 Archisa Bhattacharya. Reuse requires attribution.

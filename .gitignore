@@ -1,0 +1,3 @@
+
+# Local GPT-2 XL activation cache
+/results/layer_curves/gpt2xl_hidden_states.pt
